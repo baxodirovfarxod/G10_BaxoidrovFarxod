@@ -14,10 +14,11 @@ public class ToDoItemService : IToDoItemService
     private readonly IValidator<ToDoItemUpdateDto> _toDoItemUpdateDtoValidator;
     private readonly IMapper _mapper;
 
-    public ToDoItemService(IToDoItemRepository toDoItemRepository, IValidator<ToDoItemCreateDto> validator, IMapper mapper)
+    public ToDoItemService(IToDoItemRepository toDoItemRepository, IValidator<ToDoItemCreateDto> validator, IMapper mapper, IValidator<ToDoItemUpdateDto> toDoItemUpdateDtoValidator)
     {
         _toDoItemRepository = toDoItemRepository;
         _toDoItemCreateDtoValidator = validator;
+        _toDoItemUpdateDtoValidator = toDoItemUpdateDtoValidator;
         _mapper = mapper;
     }
     public async Task<long> AddToDoItemAsync(ToDoItemCreateDto toDoItem)
@@ -97,8 +98,14 @@ public class ToDoItemService : IToDoItemService
             throw new Exception($"ToDoItem with ID {newItem.ToDoItemId} not found.");
         }
 
-        _mapper.Map<ToDoItem>(newItem);
+        var validationResult = _toDoItemUpdateDtoValidator.Validate(newItem);
+        if (validationResult.IsValid == false) 
+        {
+            throw new ValidationException(validationResult.Errors);
+        }
 
-        await _toDoItemRepository.UpdateToDoItemAsync(existingItem);
+        var updateItem = _mapper.Map(newItem, existingItem);
+
+        await _toDoItemRepository.UpdateToDoItemAsync(updateItem);
     }
 }
