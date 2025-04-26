@@ -1,4 +1,6 @@
-﻿using ToDoList.Repository.Settings;
+﻿using Microsoft.EntityFrameworkCore;
+using ToDoList.Dal;
+using ToDoList.Repository.Settings;
 
 namespace ToDoList.Server.Configurations;
 
@@ -9,5 +11,9 @@ public static class DatabaseConfigurations
         var connectionString = builder.Configuration.GetConnectionString("DatabaseConnection");
 
         builder.Services.AddSingleton(new SqlDbConnectionString(connectionString));
+
+        builder.Services.AddDbContext<MainContext>(options =>
+          options.UseSqlServer(connectionString));
+
     }
 }
