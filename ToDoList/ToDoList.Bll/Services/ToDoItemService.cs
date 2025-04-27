@@ -30,10 +30,11 @@ public class ToDoItemService : IToDoItemService
         }
 
         ArgumentNullException.ThrowIfNull(toDoItem);
-        var covert = _mapper.Map<ToDoItem>(toDoItem);
 
+        var convert = _mapper.Map<ToDoItem>(toDoItem);
+        convert.CreatedAt = DateTime.Now;
 
-        var id = await _toDoItemRepository.InsertToDoItemAsync(covert);
+        var id = await _toDoItemRepository.InsertToDoItemAsync(convert);
         return id;
     }
 
