@@ -170,4 +170,9 @@ public class AdoNetToDoItemRepository : IToDoItemRepository
             DueDate = reader.GetDateTime(reader.GetOrdinal("DueDate"))
         };
     }
+
+    public Task<long> GetTotalCountAsync()
+    {
+        throw new NotImplementedException();
+    }
 }

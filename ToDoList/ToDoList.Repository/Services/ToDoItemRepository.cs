@@ -21,6 +21,11 @@ public class ToDoItemRepository : IToDoItemRepository
         await MainContext.SaveChangesAsync();
     }
 
+    public async Task<long> GetTotalCountAsync()
+    {
+        return await MainContext.ToDoItems.CountAsync();
+    }
+
     public Task<ICollection<ToDoItem>> GetUpcomingDeadlinesAsync()
     {
         throw new NotImplementedException();

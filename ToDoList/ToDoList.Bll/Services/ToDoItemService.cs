@@ -48,7 +48,7 @@ public class ToDoItemService : IToDoItemService
         await _toDoItemRepository.DeleteToDoItemByIdAsync(id);
     }
 
-    public async Task<List<ToDoItemGetDto>> GetAllToDoItemsAsync(int skip, int take)
+    public async Task<ToDoItemGetDtoForPeganation> GetAllToDoItemsAsync(int skip, int take)
     {
         var toDoItems = await _toDoItemRepository.SelectAllToDoItemsAsync(skip, take);
 
@@ -56,7 +56,13 @@ public class ToDoItemService : IToDoItemService
             .Select(item => _mapper.Map<ToDoItemGetDto>(item))
             .ToList();
 
-        return toDoItemDtos;
+        var totalCount = await _toDoItemRepository.GetTotalCountAsync();
+
+        return new ToDoItemGetDtoForPeganation
+        {
+            ToDoItems = toDoItemDtos,
+            TotalCount = totalCount
+        };
     }
 
     public async Task<List<ToDoItemGetDto>> GetByDueDateAsync(DateTime dueDate)
